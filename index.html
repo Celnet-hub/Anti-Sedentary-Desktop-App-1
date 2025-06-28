@@ -3,9 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Anti-Sedentary App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>Anti-Sedentary Application</h1>
   <p>Running in the background to remind you to take breaks.</p>
+  <p>You will be notified for eye exercises every <span id="eye-interval">30</span> minutes and for stretching every <span id="stretch-interval">60</span> minutes.</p>
+
+  <script>
+    const eyeIntervalSpan = document.getElementById('eye-interval');
+    const stretchIntervalSpan = document.getElementById('stretch-interval');
+
+    const eyeIntervalMinutes = Math.round(1800000/ 60000);
+    const stretchIntervalMinutes = Math.round(3600000/ 60000);
+    eyeIntervalSpan.textContent = eyeIntervalMinutes;
+    stretchIntervalSpan.textContent = stretchIntervalMinutes;
+
+  </script>
 </body>
 </html>

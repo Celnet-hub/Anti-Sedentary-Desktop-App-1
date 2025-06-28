@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Break Time</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    img {
+      max-width: 80%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="break-title"></h2>
+  <img id="break-image" src="" alt="Break Tip">
+  <p id="break-description"></p>
+  <div class="button-container">
+    <button id="snooze">Snooze</button>
+    <button id="dismiss">Dismiss</button>
+  </div>
+  <script src="break-window.js"></script>
+</body>
+</html>
