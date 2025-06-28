@@ -8,7 +8,7 @@ const dismissButton = document.getElementById('dismiss');
 
 const breakImages = {
   'eye': [
-    'eye1.jpg', 'eye2.jpg', 'eye3.jpg'
+    'media/Bunny_eye_break.mp4', 'media/Bunny_eye_break.mp4', 'media/Bunny_eye_break.mp4'
   ],
   'stretch': [
     'stretch1.jpg', 'stretch2.jpg', 'stretch3.jpg'
