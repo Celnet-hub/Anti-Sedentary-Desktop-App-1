@@ -1,0 +1,153 @@
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	text-align: center;
+	padding: 20px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin: 0;
+}
+
+.break-container {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	border-radius: 20px;
+	padding: 30px;
+	box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+h2 {
+	margin-bottom: 20px;
+	font-size: 2em;
+	font-weight: 300;
+}
+
+.media-container {
+	position: relative;
+	margin-bottom: 20px;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.media-content {
+	max-width: 80%;
+	max-height: 300px;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	transition: opacity 0.3s ease;
+}
+
+.media-content.loading {
+	opacity: 0.5;
+}
+
+.loading-spinner {
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	border: 4px solid rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	border-top-color: white;
+	animation: spin 1s linear infinite;
+	display: none;
+}
+
+.media-content.loading + .loading-spinner {
+	display: block;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.error-placeholder {
+	display: none;
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px dashed rgba(255, 255, 255, 0.3);
+	border-radius: 10px;
+	padding: 40px;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.error-placeholder.show {
+	display: block;
+}
+
+p {
+	font-size: 1.1em;
+	line-height: 1.6;
+	margin-bottom: 30px;
+	opacity: 0.9;
+}
+
+.button-container {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+button {
+	padding: 12px 24px;
+	font-size: 16px;
+	cursor: pointer;
+	border: none;
+	border-radius: 25px;
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
+	backdrop-filter: blur(10px);
+	transition: all 0.3s ease;
+	min-width: 100px;
+}
+
+button:hover {
+	background: rgba(255, 255, 255, 0.3);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+	transform: translateY(0);
+}
+
+#dismiss {
+	background: rgba(76, 175, 80, 0.8);
+}
+
+#dismiss:hover {
+	background: rgba(76, 175, 80, 1);
+}
+
+#snooze {
+	background: rgba(255, 152, 0, 0.8);
+}
+
+#snooze:hover {
+	background: rgba(255, 152, 0, 1);
+}
+
+@media (max-width: 480px) {
+	.break-container {
+		margin: 10px;
+		padding: 20px;
+	}
+
+	.button-container {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	button {
+		width: 200px;
+	}
+}

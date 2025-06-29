@@ -1,33 +1,156 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Anti-Sedentary App</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Anti-Sedentary Application</h1>
-  <p>Running in the background to remind you to take breaks.</p>
-  <p>You will be notified for eye exercises every <span id="eye-interval">30</span> minutes and for stretching every <span id="stretch-interval">60</span> minutes.</p>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Anti-Sedentary App</title>
+<link rel="stylesheet" href="css/index.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h1>🏃‍♀️ Anti-Sedentary App</h1>
+				<p>Stay healthy with regular break reminders</p>
+			</div>
 
-  <script>
-    const eyeIntervalSpan = document.getElementById('eye-interval');
-    const stretchIntervalSpan = document.getElementById('stretch-interval');
+			<div class="card">
+				<h2>📊 Break Status</h2>
+				<div class="status-grid">
+					<div class="status-item">
+						<span class="status-emoji">👁️</span>
+						<strong>Eye Exercises</strong>
+						<div class="next-break" id="eye-next">
+							Next in <span id="eye-timer">--</span>
+						</div>
+					</div>
+					<div class="status-item">
+						<span class="status-emoji">🤸‍♀️</span>
+						<strong>Stretching</strong>
+						<div class="next-break" id="stretch-next">
+							Next in <span id="stretch-timer">--</span>
+						</div>
+					</div>
+					<div class="status-item">
+						<span class="status-emoji">🚶‍♀️</span>
+						<strong>Walking</strong>
+						<div class="next-break" id="walk-next">
+							Next in <span id="walk-timer">--</span>
+						</div>
+					</div>
+					<div class="status-item">
+						<span class="status-emoji">🧘‍♀️</span>
+						<strong>Meditation</strong>
+						<div class="next-break" id="meditation-next">
+							Next in <span id="meditation-timer">--</span>
+						</div>
+					</div>
+					<div class="status-item">
+						<span class="status-emoji">📞</span>
+						<strong>Social Call</strong>
+						<div class="next-break" id="call-next">
+							Next in <span id="call-timer">--</span>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    const eyeIntervalMinutes = Math.round(1800000/ 60000);
-    const stretchIntervalMinutes = Math.round(3600000/ 60000);
-    eyeIntervalSpan.textContent = eyeIntervalMinutes;
-    stretchIntervalSpan.textContent = stretchIntervalMinutes;
+			<div class="card settings-section">
+				<h3>⚙️ Reminder Settings</h3>
 
-  </script>
-</body>
+				<div class="setting-item">
+					<div class="setting-label">
+						<input type="checkbox" id="enable-eye" checked />
+						<span>👁️ Eye Exercise Reminders</span>
+					</div>
+					<div>
+						Every
+						<input
+							type="number"
+							id="eye-interval"
+							value="5"
+							min="1"
+							max="120"
+						/>
+						minutes
+					</div>
+				</div>
+
+				<div class="setting-item">
+					<div class="setting-label">
+						<input type="checkbox" id="enable-stretch" checked />
+						<span>🤸‍♀️ Stretching Reminders</span>
+					</div>
+					<div>
+						Every
+						<input
+							type="number"
+							id="stretch-interval"
+							value="5"
+							min="1"
+							max="120"
+						/>
+						minutes
+					</div>
+				</div>
+
+				<div class="setting-item">
+					<div class="setting-label">
+						<input type="checkbox" id="enable-walk" checked />
+						<span>🚶‍♀️ Walking Reminders</span>
+					</div>
+					<div>
+						Every
+						<input
+							type="number"
+							id="walk-interval"
+							value="15"
+							min="1"
+							max="120"
+						/>
+						minutes
+					</div>
+				</div>
+
+				<div class="setting-item">
+					<div class="setting-label">
+						<input type="checkbox" id="enable-meditation" checked />
+						<span>🧘‍♀️ Meditation Reminders</span>
+					</div>
+					<div>
+						Every
+						<input
+							type="number"
+							id="meditation-interval"
+							value="20"
+							min="1"
+							max="120"
+						/>
+						minutes
+					</div>
+				</div>
+
+				<div class="setting-item">
+					<div class="setting-label">
+						<input type="checkbox" id="enable-call" checked />
+						<span>📞 Social Connection Reminders</span>
+					</div>
+					<div>
+						Every
+						<input
+							type="number"
+							id="call-interval"
+							value="30"
+							min="1"
+							max="120"
+						/>
+						minutes
+					</div>
+				</div>
+
+				<button class="save-btn" id="save-settings">💾 Save Settings</button>
+			</div>
+		</div>
+
+		<script src="index.js"></script>
+	</body>
 </html>
