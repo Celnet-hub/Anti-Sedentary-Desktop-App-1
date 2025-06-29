@@ -1,42 +1,55 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Break Time</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    img {
-      max-width: 80%;
-      height: auto;
-      margin-bottom: 20px;
-    }
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <h2 id="break-title"></h2>
-  <img id="break-image" src="" alt="Break Tip">
-  <p id="break-description"></p>
-  <div class="button-container">
-    <button id="snooze">Snooze</button>
-    <button id="dismiss">Dismiss</button>
-  </div>
-  <script src="break-window.js"></script>
-</body>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Break Time</title>
+		<link rel="stylesheet" href="css/break-window.css" />
+	</head>
+	<body>
+		<div class="break-container">
+			<h2 id="break-title">Take a Break!</h2>
+
+			<div class="media-container">
+				<img
+					id="break-image"
+					class="media-content"
+					src=""
+					alt=""
+					style="display: none"
+				/>
+				<video
+					id="break-video"
+					class="media-content"
+					style="display: none"
+					autoplay
+					loop
+					muted
+					playsinline
+				>
+					<source src="" type="video/mp4" />
+					<source src="" type="video/webm" />
+					Your browser does not support video playback.
+				</video>
+				<div class="loading-spinner"></div>
+				<div class="error-placeholder">
+					<p>🖼️ Media content unavailable</p>
+					<p>Continue with your break anyway!</p>
+				</div>
+			</div>
+
+			<p id="break-description">Time to give your body and mind a rest.</p>
+
+			<div class="button-container">
+				<button id="snooze" aria-label="Snooze break reminder for 5 minutes">
+					⏰ Snooze (5 min)
+				</button>
+				<button id="dismiss" aria-label="Complete break and dismiss reminder">
+					✅ Done
+				</button>
+			</div>
+		</div>
+
+		<script src="break-window.js"></script>
+	</body>
 </html>

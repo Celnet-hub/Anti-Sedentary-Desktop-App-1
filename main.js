@@ -3,29 +3,41 @@ const Store = require("electron-store").default;
 const path = require("path");
 
 let mainWindow;
-let breakWindow; // for displaying the images used during the stretch break
+let breakWindow;
 let eyeExerciseTimer;
 let stretchTimer;
+let walkTimer;
+let meditationTimer;
+let callTimer;
 
-// Interval
-let eyeExerciseInterval = 2 * 60 * 1000; // 30 minutes in milliseconds
-const DEFAULT_STRETCH_INTERVAL = 3 * 60 * 1000; // 1 hour in milliseconds
-const DEFAULT_EYE_EXERCISE_INTERVAL = 5 * 60 * 1000; // 30 minutes in milliseconds
-
-// store user preferences. By default electron do not persist data. We use electron-store
+// Default intervals (5 minutes each as requested)
+const DEFAULT_EYE_EXERCISE_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const DEFAULT_STRETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const DEFAULT_WALK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+const DEFAULT_MEDITATION_INTERVAL = 20 * 60 * 1000; // 20 minutes
+const DEFAULT_CALL_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 const store = new Store({
 	defaults: {
 		eyeExerciseInterval: DEFAULT_EYE_EXERCISE_INTERVAL,
 		stretchInterval: DEFAULT_STRETCH_INTERVAL,
+		walkInterval: DEFAULT_WALK_INTERVAL,
+		meditationInterval: DEFAULT_MEDITATION_INTERVAL,
+		callInterval: DEFAULT_CALL_INTERVAL,
+		enabledBreaks: {
+			eye: true,
+			stretch: true,
+			walk: true,
+			meditation: true,
+			call: true,
+		},
 	},
 });
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
-		// show: false, // hide the window intially
+		width: 900,
+		height: 700,
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -34,14 +46,9 @@ function createWindow() {
 
 	mainWindow.loadFile("index.html");
 
-	// Uncomment to open DevTools
-	// mainWindow.webContents.openDevTools();
-
 	mainWindow.on("closed", () => {
 		mainWindow = null;
-		clearTimeout(eyeExerciseTimer);
-		clearTimeout(stretchTimer);
-
+		clearAllTimers();
 		if (breakWindow) {
 			breakWindow.close();
 		}
@@ -50,33 +57,34 @@ function createWindow() {
 
 function createBreakWindow(breakType) {
 	if (breakWindow) {
-		breakWindow.close(); // Close any existing break window
+		breakWindow.close();
 	}
 
 	breakWindow = new BrowserWindow({
-		width: 600,
-		height: 400,
+		width: 700,
+		height: 500,
 		show: false,
-		parent: mainWindow, // Make it a child of the main window
-		modal: true, // Make it modal (optional, but good for focus)
+		parent: mainWindow,
+		modal: true,
+		resizable: false,
 		webPreferences: {
-			nodeIntegration: true, //  consider security implications
+			nodeIntegration: true,
 			contextIsolation: false,
 		},
 	});
 
 	breakWindow.loadFile("break-window.html");
+
 	breakWindow.once("ready-to-show", () => {
 		if (breakWindow) {
 			breakWindow.show();
+			breakWindow.focus();
 		}
-		// breakWindow.webContents.openDevTools();
 	});
 
-	// Send break type to the renderer process
 	breakWindow.webContents.on("did-finish-load", () => {
 		if (breakWindow) {
-			breakWindow.webContents.send("break-type", breakType); // breakType can be "eye" or "strech"
+			breakWindow.webContents.send("break-type", breakType);
 		}
 	});
 
@@ -85,75 +93,169 @@ function createBreakWindow(breakType) {
 	});
 }
 
-// EYE NOTIFICATION
+// Enhanced notification functions with images
+function showNotification(breakType) {
+	const notificationConfig = {
+		eye: {
+			title: "👁️ Time for Eye Exercises!",
+			body: "Look away from your screen and relax your eyes",
+			icon: path.join(__dirname, "media", "eye-icon.png"),
+		},
+		stretch: {
+			title: "🤸‍♀️ Time to Stretch!",
+			body: "Stand up and do some stretching exercises",
+			icon: path.join(__dirname, "media", "stretch-icon.png"),
+		},
+		walk: {
+			title: "🚶‍♀️ Time for a Walk!",
+			body: "Take a short walk to refresh yourself",
+			icon: path.join(__dirname, "media", "walk-icon.png"),
+		},
+		meditation: {
+			title: "🧘‍♀️ Time to Meditate!",
+			body: "Take a moment to breathe and clear your mind",
+			icon: path.join(__dirname, "media", "meditation-icon.png"),
+		},
+		call: {
+			title: "📞 Time to Connect!",
+			body: "Reach out to someone and have a conversation",
+			icon: path.join(__dirname, "media", "call-icon.png"),
+		},
+	};
+
+	const config = notificationConfig[breakType];
+	const notification = new Notification({
+		title: config.title,
+		body: config.body,
+		// icon: config.icon, // Uncomment if you have icon files
+	});
+
+	notification.on("click", () => {
+		createBreakWindow(breakType);
+	});
+
+	notification.show();
+	createBreakWindow(breakType);
+}
+
+// Timer functions for each break type
 function showEyeExerciseNotification() {
-	const notification = new Notification({
-		title: "Time for an Excercise",
-		body: "Look away from your screen for a while",
-	});
-
-	notification.show();
-	createBreakWindow("eye"); // Show the break window
-	resetEyeExerciseTimer();
+	showNotification("eye");
+	resetTimer("eye");
 }
 
-// STRECH NOTIFICATION
 function showStretchNotification() {
-	const notification = new Notification({
-		title: "Time to Stretch!",
-		body: "Stand up and stretch your legs.",
-	});
-	notification.show();
-	createBreakWindow("stretch");
-	resetStretchTimer();
+	showNotification("stretch");
+	resetTimer("stretch");
 }
 
-function resetEyeExerciseTimer() {
+function showWalkNotification() {
+	showNotification("walk");
+	resetTimer("walk");
+}
+
+function showMeditationNotification() {
+	showNotification("meditation");
+	resetTimer("meditation");
+}
+
+function showCallNotification() {
+	showNotification("call");
+	resetTimer("call");
+}
+
+function resetTimer(breakType) {
+	const timerMap = {
+		eye: {
+			timer: "eyeExerciseTimer",
+			func: showEyeExerciseNotification,
+			key: "eyeExerciseInterval",
+		},
+		stretch: {
+			timer: "stretchTimer",
+			func: showStretchNotification,
+			key: "stretchInterval",
+		},
+		walk: {
+			timer: "walkTimer",
+			func: showWalkNotification,
+			key: "walkInterval",
+		},
+		meditation: {
+			timer: "meditationTimer",
+			func: showMeditationNotification,
+			key: "meditationInterval",
+		},
+		call: {
+			timer: "callTimer",
+			func: showCallNotification,
+			key: "callInterval",
+		},
+	};
+
+	const config = timerMap[breakType];
+	if (config) {
+		clearTimeout(eval(config.timer));
+		const interval = store.get(config.key);
+		const enabledBreaks = store.get("enabledBreaks");
+
+		if (enabledBreaks[breakType]) {
+			eval(`${config.timer} = setTimeout(${config.func.name}, ${interval})`);
+		}
+	}
+}
+
+function clearAllTimers() {
 	clearTimeout(eyeExerciseTimer);
-	eyeExerciseTimer = setTimeout(
-		showEyeExerciseNotification,
-		eyeExerciseInterval,
-	);
+	clearTimeout(stretchTimer);
+	clearTimeout(walkTimer);
+	clearTimeout(meditationTimer);
+	clearTimeout(callTimer);
 }
 
-function resetStretchTimer() {
-	clearTimeout(stretchTimer);
-	const interval = store.get("stretchInterval", DEFAULT_STRETCH_INTERVAL);
-	stretchTimer = setTimeout(showStretchNotification, interval);
+function initializeAllTimers() {
+	const enabledBreaks = store.get("enabledBreaks");
+
+	if (enabledBreaks.eye) resetTimer("eye");
+	if (enabledBreaks.stretch) resetTimer("stretch");
+	if (enabledBreaks.walk) resetTimer("walk");
+	if (enabledBreaks.meditation) resetTimer("meditation");
+	if (enabledBreaks.call) resetTimer("call");
 }
 
 app.whenReady().then(() => {
 	createWindow();
-	resetEyeExerciseTimer();
-	resetStretchTimer();
+	initializeAllTimers();
 
-	// IPC Handlers for snooze and dismiss
+	// Enhanced IPC handlers
 	ipcMain.on("snooze", (event, breakType) => {
 		if (breakWindow) {
-			breakWindow.close(); // if breakWindow is active, close it
+			breakWindow.close();
 		}
 
-		// Snooze for 10 minutes (Defualt time) then re-trigger notifications after 10 mintues
+		// Snooze for 5 minutes then re-trigger
 		setTimeout(() => {
-			if (breakType == "eye") {
-				showEyeExerciseNotification(); // Re-trigger the notification
-			} else if (breakType == "stretch") {
-				showStretchNotification();
-			}
-		}, 10 * 60 * 1000);
+			showNotification(breakType);
+		}, 5 * 60 * 1000);
 	});
 
 	ipcMain.on("dismiss", (event, breakType) => {
 		if (breakWindow) {
 			breakWindow.close();
 		}
+		resetTimer(breakType);
+	});
 
-		// restart the timer
-		if (breakType == "eye") {
-			resetEyeExerciseTimer();
-		} else if (breakType == "stretch") {
-			resetStretchTimer();
-		}
+	// Settings management
+	ipcMain.on("update-settings", (event, settings) => {
+		store.set(settings);
+		clearAllTimers();
+		initializeAllTimers();
+		event.reply("settings-updated");
+	});
+
+	ipcMain.on("get-settings", (event) => {
+		event.reply("settings-data", store.store);
 	});
 
 	app.on("activate", () => {
